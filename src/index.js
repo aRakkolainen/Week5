@@ -1,6 +1,6 @@
 import "./styles.css";
-import "./leaflet.css";
-import L from "./leaflet";
+import "./leaflet/leaflet.css";
+import L from "./leaflet/leaflet";
 
 const fetchData = async () => {
     const url = "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=tilastointialueet:kunta4500k&outputFormat=json&srsName=EPSG:4326";
@@ -9,7 +9,7 @@ const fetchData = async () => {
     initializeMap(geoJSONData);
 }; 
 
-const initializeMap = (geoJSONData) = () => {
+const initializeMap = (geoJSONData) => {
     let map = L.map('map', {
         minZoom: -3, 
     })
@@ -17,4 +17,6 @@ const initializeMap = (geoJSONData) = () => {
         weigth: 2, 
     }).addTo(map)
     map.fitBounds(geoJSON.getBounds()); 
-}
+}; 
+
+fetchData(); 
