@@ -18,32 +18,43 @@ const fetchData = async () => {
   const positiveJSON = await positiveResponse.json();
   let negativeMigration = negativeJSON.dataset.value;
   let positiveMigration = positiveJSON.dataset.value;
-  initializeMap(geoJSONData, negativeMigration, positiveMigration);
+
+  let features = geoJSONData.features;
+  for (let i = 0; i < features.length; i++) {
+    //console.log(features[i]);
+    features[i].properties.negative = negativeMigration[i];
+    features[i].properties.positive = positiveMigration[i];
+  }
+  initializeMap(geoJSONData);
 };
 
-const initializeMap = (geoJSONData, negativeMigration, positiveMigration) => {
+const initializeMap = (geoJSONData) => {
   let map = L.map("map", {
     minZoom: -3
   });
-  let geoJSON = L.geoJSON(geoJSONData, negativeMigration, positiveMigration, {
+  let geoJSON = L.geoJSON(geoJSONData, {
     onEachFeature: getFeature,
     weigth: 2
   }).addTo(map);
+
   let osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
+    onEachFeature: getFeature,
     attribution: "© OpenStreetMap"
   }).addTo(map);
 
   map.fitBounds(geoJSON.getBounds());
 };
 
-const getFeature = (feature, layer, negativeMigration, positiveMigration) => {
+const getFeature = (feature, layer) => {
   const name = feature.properties.name;
-  console.log(positiveMigration);
+  const negativeMig = feature.properties.negative;
+  const positiveMig = feature.properties.positive;
   layer.bindTooltip(name);
-  /*layer.bindPopUp(`<ul>
-<li>Negative migration: ${data1[nega_index]}</li>
-<li>Positive migration: ${data2[posi_index]}`);*/
+
+  layer.bindPopup(`<ul>
+<li>Negative migration: ${negativeMig}</li>
+<li>Positive migration: ${positiveMig}`);
 };
 
 fetchData();
