@@ -21,7 +21,8 @@ const fetchData = async () => {
 
   let features = geoJSONData.features;
   for (let i = 0; i < features.length; i++) {
-    //console.log(features[i]);
+    //Source for adding new properties to the feature: https://www.scaler.com/topics/add-property-to-object-javascript/
+    //Another source: https://stackoverflow.com/questions/31993162/geojson-properties-add-update
     features[i].properties.negative = negativeMigration[i];
     features[i].properties.positive = positiveMigration[i];
     let hue = Math.pow(positiveMigration[i] / negativeMigration[i], 3) * 60;
@@ -57,9 +58,9 @@ const getFeature = (feature, layer) => {
   const positiveMig = feature.properties.positive;
   layer.bindTooltip(name);
 
-  layer.bindPopup(`<ul>
-<li>Negative migration: ${negativeMig}</li>
-<li>Positive migration: ${positiveMig}</li>`);
+  layer.bindPopup(`
+<h3>Positive migration: +${positiveMig}</h3>
+<h3>Negative migration: -${negativeMig}</h3>`);
 };
 const getStyle = (feature) => {
   return {
