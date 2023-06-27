@@ -24,6 +24,10 @@ const fetchData = async () => {
     //console.log(features[i]);
     features[i].properties.negative = negativeMigration[i];
     features[i].properties.positive = positiveMigration[i];
+    let hue = Math.pow(positiveMigration[i] / negativeMigration[i], 3) * 60;
+    if (hue < 120) {
+      features[i].properties.hue = Math.ceil(hue);
+    }
   }
   initializeMap(geoJSONData);
 };
@@ -34,7 +38,8 @@ const initializeMap = (geoJSONData) => {
   });
   let geoJSON = L.geoJSON(geoJSONData, {
     onEachFeature: getFeature,
-    weigth: 2
+    weigth: 2,
+    style: getStyle
   }).addTo(map);
 
   let osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -54,7 +59,12 @@ const getFeature = (feature, layer) => {
 
   layer.bindPopup(`<ul>
 <li>Negative migration: ${negativeMig}</li>
-<li>Positive migration: ${positiveMig}`);
+<li>Positive migration: ${positiveMig}</li>`);
 };
-
+const getStyle = (feature) => {
+  return {
+    //Help with using variables in hsl: https://stackoverflow.com/questions/67066318/passing-variables-into-hsl-color-values-in-three-js
+    color: `hsl(${feature.properties.hue}, 75%, 50%)`
+  };
+};
 fetchData();
