@@ -59,8 +59,10 @@ const getFeature = (feature, layer) => {
   layer.bindTooltip(name);
 
   layer.bindPopup(`
-<h3>Positive migration: +${positiveMig}</h3>
-<h3>Negative migration: -${negativeMig}</h3>`);
+  <ul> ${name}
+<li>Positive migration: +${positiveMig}</li>
+<li>Negative migration: -${negativeMig}</li> 
+</ul>`);
 };
 const getStyle = (feature) => {
   return {
